@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель повара</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Unbounded:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background: #f8f9fa; }
+        
+        .header { 
+            background: #DBB91E; 
+            padding: 18px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .logo { 
+            font-family: 'Unbounded', cursive; 
+            font-size: 32px; 
+            color: white; 
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .user { 
+            color: white; 
+            font-size: 20px; 
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+        
+        .tabs { 
+            display: flex; 
+            background: white; 
+            margin: 20px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .tab { 
+            flex: 1; 
+            padding: 24px 10px; 
+            text-align: center; 
+            font-size: 20px; 
+            font-weight: 600;
+            border: none; 
+            background: none;
+            transition: all 0.3s ease;
+        }
+        .tab.active { 
+            background: #DBB91E; 
+            color: white;
+        }
+        
+        .page { 
+            padding: 0 20px 20px; 
+            display: none; 
+        }
+        .page.active { 
+            display: block; 
+        }
+        
+        .big-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+        
+        .big-btn { 
+            display: block; 
+            width: 100%; 
+            padding: 28px; 
+            margin: 20px 0; 
+            background: #DBB91E; 
+            color: white; 
+            border: none; 
+            border-radius: 16px; 
+            font-size: 24px; 
+            font-weight: 700;
+            box-shadow: 0 6px 12px rgba(219, 185, 30, 0.3);
+            transition: all 0.3s ease;
+        }
+        .big-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(219, 185, 30, 0.4);
+        }
+        
+        .stat-title {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .stat-number { 
+            font-family: 'Unbounded', cursive; 
+            font-size: 42px; 
+            color: #DBB91E; 
+            margin: 15px 0;
+            font-weight: 800;
+        }
+        .stat-subtitle {
+            font-size: 18px;
+            color: #888;
+        }
+        
+        .input-big { 
+            width: 100%; 
+            padding: 24px; 
+            font-size: 22px; 
+            margin: 20px 0; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 16px;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .input-big:focus {
+            outline: none;
+            border-color: #DBB91E;
+            box-shadow: 0 0 0 3px rgba(219, 185, 30, 0.1);
+        }
+        
+        .item-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 24px; 
+            background: white; 
+            margin: 12px 0; 
+            border-radius: 16px; 
+            font-size: 22px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .item-row:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .red { 
+            color: #e74c3c; 
+            font-weight: 700;
+            background: rgba(231, 76, 60, 0.1);
+            padding: 8px 16px;
+            border-radius: 12px;
+        }
+        .green { 
+            color: #2ecc71; 
+            font-weight: 700;
+        }
+        
+        .warning-card {
+            background: linear-gradient(135deg, #fff9e6, #fff3cd);
+            border-left: 6px solid #e74c3c;
+        }
+        
+        .btn-green {
+            background: #2ecc71;
+            box-shadow: 0 6px 12px rgba(46, 204, 113, 0.3);
+        }
+        .btn-blue {
+            background: #3498db;
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+        }
+        .btn-gray {
+            background: #95a5a6;
+            box-shadow: 0 6px 12px rgba(149, 165, 166, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">ПАВЕЛ ПОВАР</div>
+        <div class="user">Алексей П.</div>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab active" onclick="showPage(0)">ГЛАВНАЯ</button>
+        <button class="tab" onclick="showPage(1)">УЧЕТ</button>
+        <button class="tab" onclick="showPage(2)">СКЛАД</button>
+        <button class="tab" onclick="showPage(3)">ЗАКУПКИ</button>
+    </div>
+    
+    <!-- Главная -->
+    <div class="page active" id="page0">
+        <div class="big-card">
+            <div class="stat-title">СЕГОДНЯ 25.10.2023</div>
+            <div class="stat-number">87 / 124</div>
+            <div class="stat-subtitle">завтраков / обедов</div>
+        </div>
+        
+        <button class="big-btn">УЧЕТ ПИТАНИЯ</button>
+        <button class="big-btn">ОСТАТКИ ПРОДУКТОВ</button>
+        <button class="big-btn">ЗАЯВКИ НА ЗАКУПКУ</button>
+        
+        <div class="big-card warning-card">
+            <div style="color:#e74c3c; font-weight:700; font-size:22px; margin-bottom:20px;">ВНИМАНИЕ: МАЛО НА СКЛАДЕ</div>
+            <div class="item-row">
+                <div>Куриное филе</div>
+                <div class="red">3.2 кг</div>
+            </div>
+            <div class="item-row">
+                <div>Картофель</div>
+                <div class="red">12 кг</div>
+            </div>
+            <div class="item-row">
+                <div>Молоко</div>
+                <div class="red">8 л</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Учет питания -->
+    <div class="page" id="page1">
+        <input type="date" class="input-big" value="2023-10-25">
+        
+        <div class="big-card">
+            <div class="stat-title">ЗАВТРАКИ</div>
+            <input type="number" class="input-big" value="87">
+        </div>
+        
+        <div class="big-card">
+            <div class="stat-title">ОБЕДЫ</div>
+            <input type="number" class="input-big" value="124">
+        </div>
+        
+        <button class="big-btn btn-green">СОХРАНИТЬ</button>
+        <button class="big-btn btn-gray">ИСТОРИЯ</button>
+    </div>
+    
+    <!-- Склад -->
+    <div class="page" id="page2">
+        <div class="big-card">
+            <div class="stat-title">ОСТАТКИ ПРОДУКТОВ</div>
+            <div class="item-row">
+                <div>Куриное филе</div>
+                <div class="red">3.2 кг</div>
+            </div>
+            <div class="item-row">
+                <div>Говядина</div>
+                <div>8.5 кг</div>
+            </div>
+            <div class="item-row">
+                <div>Картофель</div>
+                <div class="red">12 кг</div>
+            </div>
+            <div class="item-row">
+                <div>Морковь</div>
+                <div>6.3 кг</div>
+            </div>
+            <div class="item-row">
+                <div>Рис</div>
+                <div class="red">4.5 кг</div>
+            </div>
+        </div>
+        
+        <button class="big-btn">ДОБАВИТЬ ПРОДУКТ</button>
+        <button class="big-btn btn-blue">СОЗДАТЬ ЗАЯВКУ</button>
+    </div>
+    
+    <!-- Закупки -->
+    <div class="page" id="page3">
+        <div class="big-card">
+            <div class="stat-title">НОВАЯ ЗАЯВКА</div>
+            <input type="text" class="input-big" placeholder="Название продукта">
+            
+            <div style="display:flex; gap:15px; margin:20px 0;">
+                <input type="number" class="input-big" placeholder="Количество" style="flex:2;">
+                <select class="input-big" style="flex:1;">
+                    <option>кг</option>
+                    <option>л</option>
+                    <option>шт</option>
+                    <option>уп.</option>
+                </select>
+            </div>
+        </div>
+        
+        <button class="big-btn">ДОБАВИТЬ В ЗАЯВКУ</button>
+        
+        <div class="big-card">
+            <div class="stat-title">ТЕКУЩАЯ ЗАЯВКА</div>
+            <div class="item-row">
+                <div>Куриное филе</div>
+                <div>5 кг</div>
+            </div>
+            <div class="item-row">
+                <div>Картофель</div>
+                <div>20 кг</div>
+            </div>
+            <div class="item-row">
+                <div>Молоко</div>
+                <div>15 л</div>
+            </div>
+        </div>
+        
+        <button class="big-btn btn-green">ОТПРАВИТЬ ЗАЯВКУ</button>
+    </div>
+
+    <script>
+        function showPage(pageIndex) {
+            // Обновляем табы
+            document.querySelectorAll('.tab').forEach((tab, i) => {
+                tab.classList.toggle('active', i === pageIndex);
+            });
+            
+            // Показываем нужную страницу
+            document.querySelectorAll('.page').forEach((page, i) => {
+                page.classList.toggle('active', i === pageIndex);
+            });
+        }
+        
+        // Добавляем обработчики для кнопок главной страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('#page0 .big-btn').forEach((btn, index) => {
+                btn.addEventListener('click', function() {
+                    showPage(index + 1); // Первая кнопка -> Учет (1), вторая -> Склад (2) и т.д.
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+{% block content %}
+<body>
+    <!-- Оранжевая шапка -->
+    <header>
+        <!-- Логотип "СТОЛОВАЯ" -->
+        <a href="#home" class="logo">СТОЛОВАЯ</a>
+        
+        <!-- Центральная навигация -->
+        <div class="nav-center">
+            <a href="#menu" class="nav-link active">Меню</a>
+            <a href="#cart" class="nav-link">Корзина</a>
+            <a href="#orders" class="nav-link">Мои заказы</a>
+        </div>
+        
+        <!-- Правая часть с аккаунтом и выпадающим меню -->
+        <div class="user-section">
+            
+            <span class="user-name">{{username.name}} {{username.surname}}</span>
+
+            <button class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="#allergens" class="dropdown-item">
+                    <i class="fas fa-allergies"></i> Аллергены
+                </a>
+                <a href="#subscriptions" class="dropdown-item">
+                    <i class="fas fa-ticket-alt"></i> Абонементы
+                </a>
+                <a href="#logout" class="dropdown-item">
+                    <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <!-- Главная страница (по умолчанию скрыта) -->
+      
+        
+        <!-- Страница меню -->
+        <div id="menu" class="page-content">
+            <h1 class="page-title">Меню на сегодня</h1>
+            <div class="content">
+                <p>Выберите блюда из нашего меню. Все блюда готовятся непосредственно перед подачей.</p>
+                
+                <div class="menu-grid">
+                    {% for menu in data.menu %}
+                    <div class="menu-item">
+                        <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Суп">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">{{menu.name}}</h3>
+                            <p class="menu-item-desc">{{menu.desc}}</p>
+                            <div class="menu-item-price">{{menu.cost}} ₽</div>
+                            <button class="add-to-cart-btn">
+                                <i class="fas fa-cart-plus"></i> Добавить в корзину
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                </div>
+            </div>
+        </div>
+        
+        <!-- Страница корзины -->
+        <div id="cart" class="page-content" style="display: none;">
+            <h1 class="page-title">Корзина</h1>
+            <div class="content">
+                <p>Ваша корзина пока пуста. Добавьте блюда из меню.</p>
+                <div style="text-align: center; margin-top: 50px;">
+                    <i class="fas fa-shopping-cart" style="font-size: 80px; color: #ddd; margin-bottom: 20px;"></i>
+                    <p style="color: #999;">Здесь будут отображаться выбранные вами блюда</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Страница моих заказов -->
+        <div id="orders" class="page-content" style="display: none;">
+            <h1 class="page-title">Мои заказы</h1>
+            <div class="content">
+                <p>Здесь вы можете просмотреть историю ваших заказов и их текущий статус.</p>
+                
+                <div class="orders-list">
+                    <div class="order-item">
+                        <div>
+                            <h3>Заказ №245 от 15.10.2023</h3>
+                            <p>Куриный суп, салат овощной, компот</p>
+                        </div>
+                        <div>
+                            <span class="order-status status-completed">Выполнен</span>
+                            <div style="font-weight: 600; margin-top: 5px;">350 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-item">
+                        <div>
+                            <h3>Заказ №246 от 16.10.2023</h3>
+                            <p>Плов с говядиной, компот</p>
+                        </div>
+                        <div>
+                            <span class="order-status status-completed">Выполнен</span>
+                            <div style="font-weight: 600; margin-top: 5px;">300 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-item">
+                        <div>
+                            <h3>Заказ №247 от 17.10.2023</h3>
+                            <p>Куриный суп, салат овощной</p>
+                        </div>
+                        <div>
+                            <span class="order-status status-pending">В обработке</span>
+                            <div style="font-weight: 600; margin-top: 5px;">270 ₽</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница аллергенов -->
+        <div id="allergens" class="page-content" style="display: none;">
+            <h1 class="page-title">Аллергены</h1>
+            <div class="content">
+                <p>Отметьте ваши аллергии, и мы исключим соответствующие блюда из меню:</p>
+                
+                <div class="allergens-container">
+                    <table class="allergens-table">
+                        <form id="allerg">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80%">Аллергии</th>
+                                    <th style="width: 20%">Есть</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Глютен (пшеница, рожь, ячмень)</td>
+                                    <td style="text-align: center;">
+                                        <input type="checkbox" class="allergy-checkbox">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Лактоза (молочные продукты)</td>
+                                    <td style="text-align: center;">
+                                        <input type="checkbox" class="allergy-checkbox">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Орехи (арахис, грецкие, миндаль)</td>
+                                    <td style="text-align: center;">
+                                        <input type="checkbox" class="allergy-checkbox">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Яйца</td>
+                                    <td style="text-align: center;">
+                                        <input type="checkbox" class="allergy-checkbox">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Рыба и морепродукты</td>
+                                    <td style="text-align: center;">
+                                        <input type="checkbox" class="allergy-checkbox">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Соя</td>
+                                    <td style="text-align: center;">
+                                        <input type="checkbox" class="allergy-checkbox">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Курица</td>
+                                    <td style="text-align: center;">
+                                        <input type="checkbox" class="allergy-checkbox">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Говядина</td>
+                                    <td style="text-align: center;">
+                                        <input type="checkbox" class="allergy-checkbox">
+                                    </td>
+                                </tr>
+                        </tbody>
+                        </form>
+                    </table>
+                </div>
+                
+                <div class="allergy-info">
+                    <p><i class="fas fa-info-circle"></i> После отметки аллергии соответствующие блюда будут скрыты из меню. Вы всегда можете изменить настройки.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Страница абонементов -->
+        <div id="subscriptions" class="page-content" style="display: none;">
+            <h1 class="page-title">Абонементы</h1>
+            <div class="content">
+                <p>Мы предлагаем различные варианты абонементов на питание:</p>
+                
+                <div class="menu-grid" style="margin-top: 20px;">
+                    <div class="menu-item">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">Абонемент на 10 обедов</h3>
+                            <p class="menu-item-desc">Позволяет получить 10 обедов по специальной цене. Срок действия - 1 месяц.</p>
+                            <div class="menu-item-price">2 500 ₽</div>
+                            <button class="add-to-cart-btn">
+                                <i class="fas fa-cart-plus"></i> Купить абонемент
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">Абонемент на 20 обедов</h3>
+                            <p class="menu-item-desc">Позволяет получить 20 обедов по специальной цене. Срок действия - 1 месяц.</p>
+                            <div class="menu-item-price">4 800 ₽</div>
+                            <button class="add-to-cart-btn">
+                                <i class="fas fa-cart-plus"></i> Купить абонемент
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">Абонемент на месяц</h3>
+                            <p class="menu-item-desc">Безлимитное питание в течение месяца (будние дни).</p>
+                            <div class="menu-item-price">7 500 ₽</div>
+                            <button class="add-to-cart-btn">
+                                <i class="fas fa-cart-plus"></i> Купить абонемент
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Элементы DOM
+        const logo = document.querySelector('.logo');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const menuToggle = document.getElementById('menuToggle');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const pageContents = document.querySelectorAll('.page-content');
+        const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+        
+        // Обработчик клика на логотип (переход на главную)
+        logo.addEventListener('click', function(e) {
+            e.preventDefault();
+            showPage('home');
+            updateActiveNav(null); // Снимаем активность с навигационных ссылок
+        });
+        
+        // Обработчики кликов на навигационные ссылки
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('href').substring(1);
+                showPage(pageId);
+                updateActiveNav(this);
+            });
+        });
+        
+        // Обработчики кликов на пункты выпадающего меню
+        const dropdownItems = document.querySelectorAll('.dropdown-item');
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('href').substring(1);
+                
+                // Если это не пункт "Выйти из аккаунта"
+                if (pageId !== 'logout') {
+                    showPage(pageId);
+                    updateActiveNav(null); // Снимаем активность с навигационных ссылок
+                } else {
+                    // Имитация выхода из аккаунта
+                    alert('Вы успешно вышли из аккаунта');
+                    // В реальном приложении здесь был бы редирект на страницу входа
+                }
+                
+                // Закрываем выпадающее меню
+                dropdownMenu.classList.remove('show');
+            });
+        });
+        
+        // Показать/скрыть выпадающее меню
+        menuToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+        
+        // Закрыть выпадающее меню при клике вне его
+        document.addEventListener('click', function(e) {
+            if (!menuToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+        
+        // Обработчик для кнопок добавления в корзину (пока нефункциональные)
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Временное сообщение о добавлении в корзину
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check"></i> Добавлено';
+                this.style.backgroundColor = '#28a745';
+                
+                // Возвращаем исходный вид через 2 секунды
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.style.backgroundColor = '#DBB91E';
+                }, 2000);
+                
+                // В реальном приложении здесь бы добавлялся товар в корзину
+                console.log('Товар добавлен в корзину');
+            });
+        });
+        
+        // Функция показа выбранной страницы
+        function showPage(pageId) {
+            // Скрываем все страницы
+            pageContents.forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // Показываем выбранную страницу
+            const activePage = document.getElementById(pageId);
+            if (activePage) {
+                activePage.style.display = 'block';
+            }
+        }
+        
+        // Функция обновления активной навигационной ссылки
+        function updateActiveNav(activeLink) {
+            // Убираем класс active у всех ссылок
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Добавляем класс active выбранной ссылке
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+        
+        // Изначально показываем страницу меню
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('menu');
+        });
+    </script>
+</body>
+</html>
+{% endblock %}
