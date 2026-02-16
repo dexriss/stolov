@@ -11,7 +11,7 @@ from flask import current_app
 from sqlalchemy import create_engine,insert,or_
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
-from app.models import Base, Users, Props, Menu, Orders
+from app.models import Base, Users, Props, Menu, Orders, Products, Order_products
 from flask_login import LoginManager, UserMixin, login_required,current_user, login_user,logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 #from flask_uploads import UploadSet, configure_uploads, IMAGES
@@ -90,64 +90,128 @@ def login():
         password = request.form['password']
         user = sess_SA.scalar(sa.select(Users).where(Users.login == login))
         #user = sess_SA.query(Users).filter(Users.login == username).one()#sess_SA.query(Users).filter_by(Users.login == username).one()
-        print(login,password)
+        print('spamten',login,password)
         
         if user and check_password_hash(user.password, password):
             print(user)
             #load_user(user.id)
             login_user(user)
-            return redirect('/')
-    return render_template('login.html')
+            if current_user.role == 'админ':
+                return redirect('/admin')
+            elif current_user.role == 'повар':
+                return redirect('/povar')
+            else:
+                return redirect('/')
+
+    return render_template('auth.html')
 
 @app.route('/logout')
 def logout():
     
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('menu'))
 
 
 @app.route('/')
 def menu():
     #user_alerg_input = ["nuts","eggs"]
+    if current_user.is_authenticated:
+        eda = sess_SA.query(Menu).all()
+        print('spamtenna', current_user.id)
+        userdata = sess_SA.query(Props).filter(Props.user_id == current_user.id).one()
+        ##setattr(userdata, 'allergenies', json.dumps(user_alerg_input))
+        print('spamtennnnnnn',getattr(userdata,"allergenies"))
+        #sess_SA.commit()
 
-    eda = sess_SA.query(Menu).all()
-    print(current_user.id)
+        user_alerg_input = getattr(userdata,'allergenies')
+        print('ds',json.loads(user_alerg_input)[0])
+        username = {}
+        username["surname"] = getattr(userdata, "surname")
+        username["name"] = getattr(userdata, "name")
+        print(username['name'])
+        data = {}
+        data['menu'] = []
+        user_alerg=json.loads(getattr(userdata,"allergenies"))
+        print(user_alerg)
+        for menu in eda:
+            menu_row = {}
+            menu_alerg = json.loads(getattr(menu, "allergenies"))
+            view = True
+            for al_u in user_alerg:
+                for al_m in menu_alerg:
+                    if al_u == al_m:
+                        view=False
+            if view:
+                for key in Menu.__table__.columns.keys():
+                    menu_row[key] = getattr(menu, key)
+                
+                data['menu'].append(menu_row)
+            
+        print('menu',len(data['menu']),len(eda))
+        
+        return render_template('student.html',title = 'Главная',data=data,username=username)
+    else:
+        return render_template('main.html',title='Школьная столовая')
+@app.route('/povar')
+def b():
     userdata = sess_SA.query(Props).filter(Props.user_id == current_user.id).one()
-    ##setattr(userdata, 'allergenies', json.dumps(user_alerg_input))
-    print(getattr(userdata,"allergenies"))
-    #sess_SA.commit()
-
-    user_alerg_input = getattr(userdata,'allergenies')
-    print('ds',json.loads(user_alerg_input)[0])
     username = {}
     username["surname"] = getattr(userdata, "surname")
     username["name"] = getattr(userdata, "name")
-    print(username['name'])
-    data = {}
-    data['menu'] = []
-    user_alerg=json.loads(getattr(userdata,"allergenies"))
-    print(user_alerg)
-    for menu in eda:
-        menu_row = {}
-        menu_alerg = json.loads(getattr(menu, "allergenies"))
-        view = True
-        for al_u in user_alerg:
-            for al_m in menu_alerg:
-                if al_u == al_m:
-                    view=False
-        if view:
-            for key in Menu.__table__.columns.keys():
-                menu_row[key] = getattr(menu, key)
-            
-            data['menu'].append(menu_row)
-        
-    print('menu',len(data['menu']),len(eda))
-    if current_user.is_authenticated:
-        return render_template('new.html',data=data,username=username)
-    else:
-        return render_template('main.html')
-@app.route('/povar')
-def b():
-    return render_template('povar.html')
+    # add_product(request.form['name'])
+    return render_template('povar.html',)
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    # form = RegistrationForm()
+    # print(form.validate_on_submit())
+    # if form.validate_on_submit():
+    #     if current_user.role == 'повар':
+    #         return redirect(url_for('/'))
+    #     elif current_user.role == 'ученик':
+    #         return redirect(url_for('/'))
+    #     else:
+    #         print(form.login.data)
+    #         user = Users(login=form.login.data,password = generate_password_hash(form.password.data))#, email=form.email.data 
+    #         props = Props(name=form.name.data,surname=form.surname.data,clas=1,role='повар')
+    #         print(user.login,user.password,'pass')
+    #         sess_SA.add(user)
+    #         sess_SA.commit()
+    #         user1 = sess_SA.query(Users).filter(Users.login == form.login.data).one()
+    #         props = Props(name=form.name.data,surname=form.surname.data,user_id=user1.id)
+    #         sess_SA.add(props) #execute(insert(Users),user)
+    #         sess_SA.commit()
+    #         flash('Congratulations, you are now a registered user!')
+
+    #         menu = Menu()
+
+            return render_template('admin.html', title='Register')
     
+# @app.route('/add',methods=['GET','POST'])   
+# def add():
+
+#     new_item = {}
+#     if request.method == 'POST':
+#         if request.form:
+            
+#             new_item['name']=request.form['name']               
+#             new_item['type']=request.form['type'] 
+#             new_item['desc']=request.form['desc'] 
+#             new_item['products']=request.form['products'] 
+#             new_item['cost']=request.form['cost'] 
+#             sess_SA.execute(insert(Menu),[new_item])
+#             sess_SA.commit()
+#     return render_template('admin.html',edit_val=new_item)
+
+# @app.route('/add_product',methods=['GET','POST'])   
+# def add_product():
+
+#     new_item = {}
+#     if request.method == 'POST':
+#         if request.form:
+#             new_item['name']=request.form['name']               
+#             new_item['ed']=request.form['ed'] 
+#             sess_SA.execute(insert(Products),[new_item])
+#             sess_SA.commit()
+#     return jsonify(status = 'ok',edit_val = new_item)
     

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Столовая | Ученик</title>
+    <link rel="stylesheet" href="static/css/student.css">
+</head>
+<body>
+    <header>
+        <a href="#home" class="logo">Столовая</a>
+        
+        <div class="nav-center">
+            <a href="#menu" class="nav-link active">Меню</a>
+            <a href="#cart" class="nav-link">Корзина</a>
+            <a href="#orders" class="nav-link">Мои заказы</a>
+        </div>
+        
+        <div class="user-section">
+            <span class="user-name">{{username.name}} {{username.surname}}</span>
+            <button class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="#allergens" class="dropdown-item">
+                    Аллергены
+                </a>
+                <a href="#subscriptions" class="dropdown-item">
+                    Абонементы
+                </a>
+                <a href="#logout" class="dropdown-item">
+                    Выйти из аккаунта
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="menu" class="page-content">
+            <h1 class="page-title">Меню</h1>
+            <div class="content">
+                
+                <div class="menu-grid">
+                    {%for menu in data.menu %}
+                    <div class="menu-item">
+                        <img src="images/ChickenSoup.jpg" alt="Суп">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">{{menu.name}}</h3>
+                            <p class="menu-item-desc">{{menu.desc}}</p>
+                            <div class="menu-item-price">{{menu.cost}} ₽</div>
+                            <button class="add-to-cart-btn">
+                                Добавить в корзину
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- <div class="menu-item">
+                        <img src="images/Plov.jpg" alt="Плов">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">Плов с говядиной</h3>
+                            <p class="menu-item-desc">Ароматный плов с нежной говядиной, морковью и специями.</p>
+                            <div class="menu-item-price">220 ₽</div>
+                            <button class="add-to-cart-btn">
+                                Добавить в корзину
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <img src="images/Salad.jpg" alt="Салат">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">Салат овощной</h3>
+                            <p class="menu-item-desc">Свежие овощи: помидоры, огурцы, перец, заправленные оливковым маслом.</p>
+                            <div class="menu-item-price">80 ₽</div>
+                            <button class="add-to-cart-btn">
+                                Добавить в корзину
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <img src="images/Kompot.jpg" alt="Компот">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">Компот из сухофруктов</h3>
+                            <p class="menu-item-desc">Освежающий напиток из сушеных яблок, груш и изюма.</p>
+                            <div class="menu-item-price">80 ₽</div>
+                            <button class="add-to-cart-btn">
+                                Добавить в корзину
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <img src="images/Pizza.jpg" alt="Пицца">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">Пицца школьная</h3>
+                            <p class="menu-item-desc">Небольшая пицца с сыром, помидорами и курицей.</p>
+                            <div class="menu-item-price">79 ₽</div>
+                            <button class="add-to-cart-btn">
+                                Добавить в корзину
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <img src="images/ChocolateKeks.jpg" alt="Шоколадный кекс">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">Шоколадный кекс</h3>
+                            <p class="menu-item-desc">Десерт из бисквитного теста с добавлением какао и шоколада.</p>
+                            <div class="menu-item-price">57 ₽</div>
+                            <button class="add-to-cart-btn">
+                                Добавить в корзину
+                            </button>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        
+        <div id="cart" class="page-content" style="display: none;">
+            <h1 class="page-title">Корзина</h1>
+            <div class="content">
+                <div id="cart-items">
+                    <div style="text-align: center; margin-top: 50px;">
+                        <div style="font-size: 80px; color: #ddd; margin-bottom: 20px;">🛒</div>
+                        <p style="color: #999;">Ваша корзина пока пуста. Добавьте блюда из меню.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="orders" class="page-content" style="display: none;">
+            <h1 class="page-title">Мои заказы</h1>
+            <div class="content">
+                <p>Здесь вы можете просмотреть историю ваших заказов и их текущий статус.</p>
+                <div class="orders-list">
+                </div>
+            </div>
+        </div>
+        
+        <div id="allergens" class="page-content" style="display: none;">
+            <h1 class="page-title">Аллергены</h1>
+            <div class="content">
+                
+                <div class="allergens-container">
+                    <table class="allergens-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80%">Аллергии</th>
+                                <th style="width: 20%">Есть</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Глютен (пшеница, рожь, ячмень)</td>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" class="allergy-checkbox">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Лактоза (молочные продукты)</td>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" class="allergy-checkbox">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Орехи (арахис, грецкие, миндаль)</td>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" class="allergy-checkbox">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Яйца</td>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" class="allergy-checkbox">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Рыба и морепродукты</td>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" class="allergy-checkbox">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Соя</td>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" class="allergy-checkbox">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Курица</td>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" class="allergy-checkbox">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Говядина</td>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" class="allergy-checkbox">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div id="subscriptions" class="page-content" style="display: none;">
+            <h1 class="page-title">Абонементы</h1>
+            <div class="content">
+                <p>Мы предлагаем различные варианты абонементов на питание:</p>
+                
+                <div class="menu-grid" style="margin-top: 20px;">
+                    <div class="menu-item">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">Абонемент на 10 обедов</h3>
+                            <p class="menu-item-desc">Позволяет получить 10 обедов по специальной цене. Срок действия - 1 месяц.</p>
+                            <div class="menu-item-price">2 500 ₽</div>
+                            <button class="add-to-cart-btn">
+                                Купить абонемент
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">Абонемент на 20 обедов</h3>
+                            <p class="menu-item-desc">Позволяет получить 20 обедов по специальной цене. Срок действия - 1 месяц.</p>
+                            <div class="menu-item-price">4 800 ₽</div>
+                            <button class="add-to-cart-btn">
+                                Купить абонемент
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <div class="menu-item-content">
+                            <h3 class="menu-item-title">Абонемент на месяц</h3>
+                            <p class="menu-item-desc">Безлимитное питание в течение месяца (будние дни).</p>
+                            <div class="menu-item-price">7 500 ₽</div>
+                            <button class="add-to-cart-btn">
+                                Купить абонемент
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="payment" class="page-content" style="display: none;">
+            <h1 class="page-title">Оплата</h1>
+            <div class="content">
+                <form id="payment-form">
+                    <div class="form-group">
+                        <label>Номер карты</label>
+                        <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Срок действия</label>
+                        <input type="text" id="card-expiry" placeholder="MM/YY" required>
+                    </div>
+                    <div class="form-group">
+                        <label>CVV</label>
+                        <input type="text" id="card-cvv" placeholder="123" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Имя владельца</label>
+                        <input type="text" id="card-name" placeholder="IVAN IVANOV" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="payment-submit" class="add-to-cart-btn">Подтвердить</button>
+                        <button type="button" id="payment-cancel" class="add-to-cart-btn" style="background-color: #6c757d;">Отмена</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/js/student.js"></script>
+</body>
+</html>

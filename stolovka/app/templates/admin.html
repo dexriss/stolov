@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Столовая | Администратор</title>
+    <link rel="stylesheet" href="static/css/admin.css">
+</head>
+<body>
+    <div class="page-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Столовая</h2>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div>
+                        <p id="userName">User Name</p>
+                    </div>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="#" data-page="payments">Оплаты</a></li>
+                <li><a href="#" data-page="attendance">Посещаемость</a></li>
+                <li><a href="#" data-page="purchases">Заявки на закупку</a></li>
+                <li><a href="#" data-page="reports">Отчеты</a></li>
+                <li><a href="#" data-page="users">Пользователи</a></li>
+            </ul>
+            
+            <a href="/logout" class="btn btn-logout" id="logoutBtn">Выйти из аккаунта</a>
+        </aside>
+        
+        <main class="main-content">
+            <div class="page-header">
+                <h1 id="pageTitle">Добро пожаловать!</h1>
+                <p id="pageSubtitle">Перейдите к страницам в боковом меню слева</p>
+            </div>
+            
+            <div id="contentContainer">
+                <!-- Дальше загрузится само -->
+            </div>
+        </main>
+    </div>
+    
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>
